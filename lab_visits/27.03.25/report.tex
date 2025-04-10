@@ -1,1 +1,71 @@
+\documentclass[a4paper, 12pt]{article}
+\usepackage[english]{babel}
+\usepackage[pdftex]{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage{wrapfig}
+\usepackage{graphicx} 
+\usepackage{algorithm}
+\usepackage{hyperref}
+\usepackage{amssymb}
 
+\newcommand{\HRule}{\rule{\linewidth}{0.3mm}}
+
+\begin{document}
+\begin{center}
+% Title
+\HRule \\[0.3cm]
+{ \LARGE \bfseries Lab visit report \\[0.3cm]}
+{ \LARGE \bfseries 27/03/25 \\[0.1cm]} % Commenter si pas besoin
+\HRule \\[1.5cm]
+
+% Author and supervisor
+\begin{minipage}[t]{0.45\textwidth}
+\begin{flushleft} \large
+\textsc{supervisors :}\\
+Bruno \textsc{Quoitin}\\
+Aqeel \textsc{Ahmed}\\
+\end{flushleft}
+
+\end{minipage}
+\begin{minipage}[t]{0.45\textwidth}
+\begin{flushright} \large
+\textsc{author :}\\
+Maxime \textsc{Bartha}\\
+\end{flushright}
+\end{minipage}\\[2ex]
+\end{center}
+
+
+\section{Initial objectives}
+Learn the basics of :\\
+- Lora point-to-point communication with the MKR1310 and the Pycom's LoPy\\
+- Lora modulation 
+
+\section{Material and software used}
+\begin{itemize}
+  \item 2 Arduino MKR1310
+  \item Usb docking station
+  \item Arduino IDE
+\end{itemize}
+
+\section{Summary}
+I set up my laptop with the arduino IDE and downloaded the nessecary library to use the Lora module of the MKR1310.\\
+I could emit Lora signals but not receive them.
+
+\section{Problems encountered} 
+I got some issues configuring the arduino IDE.\\
+The MKR1310 boards had some powering issues which lead to communication issues with my laptop.\\
+We figured out with Aqeel that one of the MKR1310 I was using was not working properly.
+
+\section{Solutions found}
+All my IDE issues were solved by following \href{https://wiki.archlinux.org/title/Arduino}{this arch linux guide}\\
+as for the defective board, I'll simply check if I can emit signals with each board.
+
+\section{Conclusion}
+I now have a configured laptop for point-to-point communication with working boards.
+
+\section{Next time}
+I'ld like to sucessfully communicate for one board to another.\\
+And try to take a look at LoRa signals with URH.
+
+\end{document}
