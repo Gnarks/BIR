@@ -26,4 +26,4 @@
 *.synctex.gz(busy)
 *.rubbercache
 rubber.cache
-
+ltex.*

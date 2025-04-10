@@ -1,0 +1,95 @@
+\documentclass[a4paper, 12pt]{article}
+\usepackage[english]{babel}
+\usepackage[pdftex]{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage{wrapfig}
+\usepackage{graphicx} 
+\usepackage{algorithm}
+\usepackage{hyperref}
+\usepackage{amssymb}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.3mm}}
+
+\begin{document}
+\begin{center}
+% Title
+\HRule \\[0.3cm]
+{ \LARGE \bfseries Lab visit report \\[0.3cm]}
+{ \LARGE \bfseries XX/XX/25 \\[0.1cm]} % Commenter si pas besoin
+\HRule \\[1.5cm]
+
+% Author and supervisor
+\begin{minipage}[t]{0.45\textwidth}
+\begin{flushleft} \large
+\textsc{supervisors :}\\
+Bruno \textsc{Quoitin}\\
+Aqeel \textsc{Ahmed}\\
+\end{flushleft}
+
+\end{minipage}
+\begin{minipage}[t]{0.45\textwidth}
+\begin{flushright} \large
+\textsc{author :}\\
+Maxime \textsc{Bartha}\\
+\end{flushright}
+\end{minipage}\\[2ex]
+\end{center}
+
+
+\section{Initial objectives}
+Get point-to-point communication working between 2 MKR1310 boards.\\
+Try to get some signals through SDRs and plot them in URH.
+
+\section{Material and software used}
+
+\begin{itemize}
+  \item Multiple Arduino MKR1310
+  \item Multiple usb hubs
+  \item Usb docking station
+  \item Oscilloscope
+  \item SDR device
+  \item Continuous current generator
+  \item Arduino IDE
+  \item URH
+\end{itemize}
+
+electrical signal reader
+continuous current electrical generator 
+
+\section{Summary}
+After testing the board and the antenna separately, I figured one of the boards was indeed defective.\\ Trying another board worked. \\
+Point-to-point communication didn't work out of the box with Arduino IDE examples.\\ Adding : \\
+\emph{
+LoRa.setSignalBandwidth(125E3); \\
+LoRa.setSpreadingFactor(8);  \\
+LoRa.setCodingRate4(5);}\\
+didn't solve the issue.
+
+Mr.Quoitin and Mr.Aqeel came to the lab, we figured that the power supply was the issue.\\
+We looked at the voltage with an oscilloscope doing through the boards and found and undersupply of power. 
+
+After figuring the power issues, we tried to connect an SDR device to my laptop and listen for signals.\\
+Without success because of some missing libraries/drivers ?
+The SDR device, even if registered by my laptop as connected, wouldn't show on URH.
+
+
+\section{Problems encountered} 
+Under power issue with the boards.\\
+SDR device not recognized by URH.
+
+\section{Solutions found}
+For the under power issue :\\
+Either use the (better) usb hub from Taiwan and supply it with a current generator.
+Or power all the boards are by connecting them directly to a current generator (+ to Vin pin and - to grnd).
+
+\section{Conclusion}
+We could figure out a good way of powering the boards.
+
+
+\section{Next time}
+I'll get the SDR device working to finally listen to (Multiple ?) LoRa transmissions.
+I can take a closer look at the power issues.
+
+
+
+\end{document}
