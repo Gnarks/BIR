@@ -9,7 +9,7 @@ time_between_frame = int(input('time_between_frame (default=20): ').strip() or "
 bandwith = int(input('bandwith (default=125000): ').strip() or "125000")
 preambule_size = int(input('preambule_size (default=8): ').strip() or "8")
 
-single_frame_transimttion_time= round( (preambule_size +4.5)* (math.pow(2,spreding_factor)/bandwith) * 1000, 2 )
+single_frame_transimttion_time= round( (preambule_size +4.25)* (math.pow(2,spreding_factor)/bandwith) * 1000, 2 )
 
 full_cycle_of_transmittion = round((single_frame_transimttion_time +time_between_frame) * number_of_device,4 )
 
