@@ -1,0 +1,82 @@
+\documentclass[a4paper, 12pt]{article}
+\usepackage[english]{babel}
+\usepackage[pdftex]{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage{wrapfig}
+\usepackage{graphicx} 
+\usepackage{algorithm}
+\usepackage{hyperref}
+\usepackage{amssymb}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.3mm}}
+
+\begin{document}
+\begin{center}
+% Title
+\HRule \\[0.3cm]
+{ \LARGE \bfseries Lab visit report \\[0.3cm]}
+{ \LARGE \bfseries 30/06/25 \\[0.1cm]} % Commenter si pas besoin
+\HRule \\[1.5cm]
+
+% Author and supervisor
+\begin{minipage}[t]{0.45\textwidth}
+\begin{flushleft} \large
+\textsc{supervisors :}\\
+Bruno \textsc{Quoitin}\\
+Aqeel \textsc{Ahmed}\\
+\end{flushleft}
+
+\end{minipage}
+\begin{minipage}[t]{0.45\textwidth}
+\begin{flushright} \large
+\textsc{author :}\\
+Maxime \textsc{Bartha}\\
+\end{flushright}
+\end{minipage}\\[2ex]
+\end{center}
+
+
+\section{Initial objectives}
+\begin{enumerate}
+  \item get my computer setup for all sdrs with gnu radio
+  \item plan the rest of the internship
+  \item make a python script to estimate the time for specific scenario (SF, \#Dev, \#frames,..)
+  \item lora communication with 2 MKR1310
+  \item plot the lora communication to see the Chirps 
+  \item read Lora Gnu SDR implementation 
+\end{enumerate}
+
+\section{Material and software used}
+\begin{itemize}
+  \item arduino MKR1310
+  \item USRP SDR
+  \item pluto SDR
+  \item cable communication
+\end{itemize}
+
+\section{Summary}
+morning : 1, 2 points done 
+afternoon : 3,4, (5,6)
+
+I installed all the necessary dependencies for every SDR.
+
+Made the python script 
+Had time to comm between 2 MKR1310
+
+
+
+\section{Problems encountered} 
+cmake dependencies
+
+\section{Solutions found}
+check for cmake dep
+
+\section{Conclusion}
+Tommorow : test with 1 sdr and 1 transmitter the minimum interval needed between 2 frames for the receiver to detect them correctly
+to get an estimation of the time between 2 frames needed
+
+take a look at Quoitin's code 
+
+
+memo : settled on sending frames each transmitter at a time and cycle until all frames per device are sent
+\end{document}
