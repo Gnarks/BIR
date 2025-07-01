@@ -1,0 +1,63 @@
+\documentclass[a4paper, 12pt]{article}
+\usepackage[english]{babel}
+\usepackage[pdftex]{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage{wrapfig}
+\usepackage{graphicx} 
+\usepackage{algorithm}
+\usepackage{hyperref}
+\usepackage{amssymb}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.3mm}}
+
+\begin{document}
+\begin{center}
+% Title
+\HRule \\[0.3cm]
+{ \LARGE \bfseries Lab visit report \\[0.3cm]}
+{ \LARGE \bfseries XX/XX/25 \\[0.1cm]} % Commenter si pas besoin
+\HRule \\[1.5cm]
+
+% Author and supervisor
+\begin{minipage}[t]{0.45\textwidth}
+\begin{flushleft} \large
+\textsc{supervisors :}\\
+Bruno \textsc{Quoitin}\\
+Aqeel \textsc{Ahmed}\\
+\end{flushleft}
+
+\end{minipage}
+\begin{minipage}[t]{0.45\textwidth}
+\begin{flushright} \large
+\textsc{author :}\\
+Maxime \textsc{Bartha}\\
+\end{flushright}
+\end{minipage}\\[2ex]
+\end{center}
+
+
+\section{Initial objectives}
+\begin{itemize}
+  \item communicate from a single arduino MKR1310 to an sdr and detect the lora preambules
+  \item find the smallest interval between 2 transmissions for the receiver to detect all frames
+  \item shift towards time synchronization 
+\end{itemize}
+
+\section{Material and software used}
+\begin{itemize}
+  \item pluto sdr
+  \item arduino MKR1310
+  \item gnuradio 
+\end{itemize}
+
+\section{Summary}
+
+\section{Problems encountered} 
+
+\section{Solutions found}
+
+\section{Conclusion}
+Tomorrow : start implementing the time synchronization code + change the arduino code 
+
+
+\end{document}

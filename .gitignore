@@ -11,7 +11,7 @@
 *.cb2
 *.lb
 articles/
-
+programs/SerialLoRa
 # these rules might exclude image files for figures etc.
 # *.ps
 # *.eps
