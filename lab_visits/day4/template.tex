@@ -15,7 +15,7 @@
 % Title
 \HRule \\[0.3cm]
 { \LARGE \bfseries Lab visit report \\[0.3cm]}
-{ \LARGE \bfseries 01/07/25 \\[0.1cm]} % Commenter si pas besoin
+{ \LARGE \bfseries 03/07/25 \\[0.1cm]} % Commenter si pas besoin
 \HRule \\[1.5cm]
 
 % Author and supervisor
@@ -38,34 +38,28 @@ Maxime \textsc{Bartha}\\
 
 \section{Initial objectives}
 \begin{itemize}
-  \item communicate from a single arduino MKR1310 to an sdr and detect the lora preambules
-  \item find the smallest interval between 2 transmissions for the receiver to detect all frames
-  \item shift towards time synchronization 
+  \item implement Tx side proof of concept 
+  \item get a simple capture
+  \item check for the sleeping drift 
 \end{itemize}
 
 \section{Material and software used}
-\begin{itemize}
-  \item pluto sdr
-  \item arduino MKR1310
-  \item gnuradio 
-  \item inspectrum
-\end{itemize}
 
 \section{Summary}
-We tried the last implementation and manage to get it working 
-explored the time synchronization method 
-learned TCP/IP socket connection in python
-experienced and searched the most effective time to sleep on python
+TCP connection (local)  between Rx and Tx done
+sleeping drift might be a bigger issue the anticipated
+slotted transmissions finished 
 
 \section{Problems encountered} 
-had some trouble figuring the ip for the TCP/IP socket connection  
+even with the embedded python file, the init waiting for the TCP connection causes grc to freeze
 
 \section{Solutions found}
-the ip is simply the IP of the receiver host
+send packet for the init state to be finished. Then it is possible to work on grc again (each time the python file is savec, the init function is called freezing grc)
 
 \section{Conclusion}
-Tomorrow : start implementing the time synchronization code + change the arduino code 
-check if the drift isn't causing problems 
+tommorow : connect the transmitter and receveir by TCP and try the file saver
 
+improvement : add Quoitin's code to the arduino code + clean it
+add frequency and number of cycles as parameters for arduino (need to transfer more than 1 byte)
 
 \end{document}

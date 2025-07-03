@@ -15,7 +15,7 @@
 % Title
 \HRule \\[0.3cm]
 { \LARGE \bfseries Lab visit report \\[0.3cm]}
-{ \LARGE \bfseries 01/07/25 \\[0.1cm]} % Commenter si pas besoin
+{ \LARGE \bfseries 02/07/25 \\[0.1cm]} % Commenter si pas besoin
 \HRule \\[1.5cm]
 
 % Author and supervisor
@@ -38,34 +38,28 @@ Maxime \textsc{Bartha}\\
 
 \section{Initial objectives}
 \begin{itemize}
-  \item communicate from a single arduino MKR1310 to an sdr and detect the lora preambules
-  \item find the smallest interval between 2 transmissions for the receiver to detect all frames
-  \item shift towards time synchronization 
+  \item implement the synchronization code for a single device first 
+  \item check for the sleeping drift 
 \end{itemize}
 
 \section{Material and software used}
-\begin{itemize}
-  \item pluto sdr
-  \item arduino MKR1310
-  \item gnuradio 
-  \item inspectrum
-\end{itemize}
 
 \section{Summary}
-We tried the last implementation and manage to get it working 
-explored the time synchronization method 
-learned TCP/IP socket connection in python
-experienced and searched the most effective time to sleep on python
+transimtter side structure done, 
+receiver (file saver) proof of concept implemented as a gnu radio block
 
 \section{Problems encountered} 
-had some trouble figuring the ip for the TCP/IP socket connection  
+gnu radio oot modules are a nightmare to work with during develloppement 
+\begin{itemize}
+  \item have to reinstall the module and restart grc at each change
+  \item the errors are cryptic or non-existant (refers to the grc generated python file)
+\end{itemize}
 
 \section{Solutions found}
-the ip is simply the IP of the receiver host
+Implementing in an embedded python block then transpose the code to the oot 
 
 \section{Conclusion}
-Tomorrow : start implementing the time synchronization code + change the arduino code 
-check if the drift isn't causing problems 
+Tommorow : finish Tx side proof of concept implementation 
 
 
 \end{document}
