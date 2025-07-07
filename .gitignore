@@ -1,4 +1,10 @@
 ## Core latex/pdflatex auxiliary files:
+*.bbl
+*.bcf
+*.blg
+*.run.xml
+programs/gr-time_synchronisation
+*.bib
 *.aux
 *.lof
 *.log
@@ -12,6 +18,11 @@
 *.lb
 articles/
 programs/SerialLoRa
+lab_visit/day1
+lab_visit/day2
+lab_visit/day3
+lab_visit/day4
+lab_visit/day5
 # these rules might exclude image files for figures etc.
 # *.ps
 # *.eps
