@@ -4,6 +4,7 @@
 *.blg
 *.run.xml
 programs/gr-time_synchronisation
+programs/last_work
 *.bib
 *.aux
 *.lof
@@ -17,7 +18,6 @@ programs/gr-time_synchronisation
 *.cb2
 *.lb
 articles/
-programs/SerialLoRa
 lab_visit/day1
 lab_visit/day2
 lab_visit/day3
