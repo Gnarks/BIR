@@ -19,7 +19,7 @@ programs/last_work
 *.cb2
 *.lb
 articles/
-lab_visit/day*
+lab_visits/day*
 # these rules might exclude image files for figures etc.
 # *.ps
 # *.eps
