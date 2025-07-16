@@ -77,7 +77,7 @@ class SerialController:
             return b""
         except OSError:
             print(
-                f"{bcolors.WARNING}I/O error on port {self.port} : DEVICE {self.device_id}{bcolors.ENDC}"
+                f"{bcolors.WARNING}Reading I/O error on port {self.port} : DEVICE {self.device_id}{bcolors.ENDC}"
             )
             self.skip = True
 
