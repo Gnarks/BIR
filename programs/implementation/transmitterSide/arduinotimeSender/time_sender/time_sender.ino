@@ -140,10 +140,10 @@ void reset(){
 void sendLoRaPacket() {
   print(" sent packet", counter);
 
-  LoRa.beginPacket();
+  LoRa.beginPacket(true);
   LoRa.write(deviceId);
   LoRa.endPacket();
-  delay(100);
+  //delay(100);
 
   // Check for RESET flag
   if (Serial.available() > 0) {
