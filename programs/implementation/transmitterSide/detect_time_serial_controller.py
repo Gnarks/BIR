@@ -6,7 +6,6 @@ import serial
 from serial import SerialException
 from serial.tools import list_ports
 import sys
-import threading
 
 # SERIAL_TO_ID is the dictionnary between serial and device id
 from serials_list import SERIAL_TO_ID
@@ -37,7 +36,6 @@ class SerialController:
         self.endFlag = 0x7F.to_bytes(1, "big")
 
         self.timeout = 5
-        self.response_timeout_limit = 5
         self.skip = False
         self.ser.write_timeout = self.timeout
         self.ser.timeout = self.timeout
@@ -47,12 +45,11 @@ class SerialController:
             return self.ser.write(data)
         except SerialException:
             print(
-                f"{bcolors.FAIL}Error reading from port {self.port} : DEVICE {self.device_id}{bcolors.ENDC}",
+                f"{bcolors.FAIL}Error writing to port {self.port} : DEVICE {self.device_id}{bcolors.ENDC}",
                 file=sys.stderr,
             )
             self.skip = True
             raise BufferError("unreachable device")
-            return b""
         except OSError:
             print(
                 f"{bcolors.WARNING}I/O error on port {self.port} : DEVICE {self.device_id}{bcolors.ENDC}"
@@ -103,12 +100,10 @@ class SerialController:
                 return
             buffer_ += r
             if r == b"\n":
-                print(buffer_)
                 buffer_ = b""
         print(
             f"{bcolors.OKGREEN}Response flag received from {self.device_id}{bcolors.ENDC}"
         )
-        signal.alarm(0)
 
     def reset(self):
         print(
@@ -125,11 +120,11 @@ class SerialController:
         self.wait_for_response_flag(self.init_timeout)
 
     def init_timeout(self, signum, frame):
-        print(f"{bcolors.WARNING} Timeout, resending Init Flag {bcolors.ENDC}")
+        print(f"{bcolors.WARNING}Timeout, resending Init Flag {bcolors.ENDC}")
         self.init_params()
-        self.wait_for_response_flag(self.panic)
+        self.wait_for_response_flag(self.reset)
 
-    def remove(self):
+    def remove(self, signum, frame):
         raise BufferError("unreachable device")
 
 
@@ -218,7 +213,6 @@ class Scheduler:
             )
             controller_list.append(serial_controller)
 
-        print(f"finished sending at {time.time()}")
         return controller_list
 
     def wait_until(self, sleep):
@@ -244,18 +238,17 @@ class Scheduler:
                 self.change_to_next_controller()
             except BufferError as b:
                 # if a device couldn't send a packet
-                # sleep to new starting time set between Rx and Tx
                 print("================================")
                 print(str(b))
                 print("================================")
-                sleep = self.handle_device_crash()
+                sleep = self.handle_device_crash(period)
                 self.wait_until(sleep)
             except KeyboardInterrupt as e:
                 raise e
 
         if self.current_cycle == self.cycles:
-            print("all cycles are done, waiting 2 period before closing the socket")
-            self.wait_until(time.time() + 2 * period)
+            print("all cycles are done, waiting 10 period before closing the socket")
+            self.wait_until(time.time() + 10 * period)
             self.transmit_var(self.conn, "close")
             self.conn.close()
 
@@ -276,7 +269,7 @@ class Scheduler:
 
         print()
 
-    def handle_device_crash(self):
+    def handle_device_crash(self, period):
         print(
             f"device {self.current_controller.device_id} crashed ! removing it from the list"
         )
@@ -297,8 +290,11 @@ class Scheduler:
         # send the device id to remove
         self.transmit_var(self.conn, to_remove.device_id)
 
-        restart_time = time.time() + 1
-        # tell to sleep to actual time + 1s
+        # send the cycle to make sure of the synchronisation
+        self.transmit_var(self.conn, self.current_cycle)
+
+        restart_time = time.time() + 10 * period
+        # tell to sleep to actual time
         self.transmit_var(self.conn, restart_time)
 
         # restart with current index
@@ -315,7 +311,7 @@ if __name__ == "__main__":
         sf = 7
         bw = 125
         phase = 3
-        period = 1
+        period = 0.3
         cycles = 10
         number_of_devices = int(input("number of devices (default=1): ").strip() or "1")
     else:
