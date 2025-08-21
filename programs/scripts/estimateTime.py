@@ -21,19 +21,20 @@ full_cycle_of_transmittion = round(
 
 total_time = round(full_cycle_of_transmittion * number_of_frame_per_device, 4)
 
-print("===========================================")
+# print("===========================================")
 
-print(f"single_frame_transimttion_time : {single_frame_transimttion_time} ms")
-print(f"full_cycle_of_transmittion : {full_cycle_of_transmittion} ms")
-
-print(f"total time : {total_time} ms")
-print(f"total time : {total_time / 1000} s")
-print(f"total time : {total_time / 60000} mins")
-print(f"total time : {total_time / 3600000} hours")
-
+# print(f"single_frame_transimttion_time : {single_frame_transimttion_time} ms")
+# print(f"full_cycle_of_transmittion : {full_cycle_of_transmittion} ms")
+#
+# print(f"total time : {total_time} ms")
+# print(f"total time : {total_time / 1000} s")
+# print(f"total time : {total_time / 60000} mins")
+# print(f"total time : {total_time / 3600000} hours")
+#
 print("==========================")
 
 total_time = time_between_frame * number_of_device * number_of_frame_per_device
+print("real time with synchronisation : ")
 print(f"total time : {total_time} ms")
 print(f"total time : {total_time / 1000} s")
 print(f"total time : {total_time / 60000} mins")
