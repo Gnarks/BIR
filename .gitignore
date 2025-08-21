@@ -5,6 +5,7 @@
 *.run.xml
 programs/gr-time_synchronisation
 programs/last_work
+programs/implementation/transmitterSide/serials_list.py
 *__pycache__
 *.bib
 *.aux
