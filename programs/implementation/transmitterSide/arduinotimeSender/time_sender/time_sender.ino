@@ -11,7 +11,6 @@
 #define LORA_SEND_FLAG 0x7B
 #define LORA_RESET_FLAG 0x7C
 #define LORA_RESPONSE_FLAG 0x7D
-#define LORA_END_FLAG 0x7F
 
 #define EOL_MARKER '\x00'
 
@@ -99,8 +98,12 @@ void readInitString(){
     Serial.print("Device id to :");
     Serial.println(deviceId);
 
-    Serial.write(LORA_RESPONSE_FLAG);
+    // change the transmission power to 14dB
+    LoRa.setTxPower(14);
 
+    digitalWrite(LED_BUILTIN, LOW);  // turn the LED off (HIGH is the voltage level)
+    Serial.write(LORA_RESPONSE_FLAG);
+    
   }
 }
 
@@ -134,7 +137,7 @@ void reset(){
     print(" Reset Flag received :", LORA_RESET_FLAG);
     // Send end flag to serial monitor
     Serial.write(LORA_RESPONSE_FLAG);
-    loop();
+    //loop();
 }
 
 void sendLoRaPacket() {
@@ -143,7 +146,7 @@ void sendLoRaPacket() {
   LoRa.beginPacket(true);
   LoRa.write(deviceId);
   LoRa.endPacket();
-  //delay(100);
+  
 
   // Check for RESET flag
   if (Serial.available() > 0) {
@@ -169,7 +172,7 @@ void waitForSendFlag(){
     sendLoRaPacket();
     counter++;
     Serial.write(LORA_RESPONSE_FLAG);
-    digitalWrite(LED_BUILTIN, LOW);  // turn the LED on (HIGH is the voltage level)
+    digitalWrite(LED_BUILTIN, LOW);  // turn the LED off (HIGH is the voltage level)
 
   } else if (incomingByte == LORA_RESET_FLAG) {
     reset();
