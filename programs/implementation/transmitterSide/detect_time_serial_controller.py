@@ -104,6 +104,7 @@ class SerialController:
         print(
             f"{bcolors.OKGREEN}Response flag received from {self.device_id}{bcolors.ENDC}"
         )
+        signal.alarm(0)
 
     def reset(self):
         print(
@@ -116,7 +117,6 @@ class SerialController:
         self.write(
             f"{self.frequency},{self.cycles},{self.bw},{self.sf},{self.device_id}\n".encode()
         )
-
         self.wait_for_response_flag(self.init_timeout)
 
     def init_timeout(self, signum, frame):
@@ -142,6 +142,8 @@ class Scheduler:
         self.current_controller = self.controller_list[0]
         self.cycles = cycles
 
+        self.connected = False
+
         # variable list to send to receiver : in order :
         # frequency(without 1e6), sf, bw (without 1e3), device_list, starting_time, period, cycles
         try:
@@ -161,19 +163,27 @@ class Scheduler:
 
             self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.conn.connect((HOST, PORT))
+            self.connected = True
             self.transmit_all_vars_to_socket(self.conn, var_list)
+            self.crash_report = "crash report : \n"
 
             self.scheduleSending(period, cycles)
+            print(f"{bcolors.FAIL}{self.crash_report}{bcolors.ENDC}")
 
         except Exception as e:
             for serial_controller in self.controller_list:
                 serial_controller.reset()
+
+            print(self.crash_report)
             raise e
         except KeyboardInterrupt as e:
-            self.transmit_var(self.conn, "close")
-            self.conn.close()
+            if self.connected:
+                self.transmit_var(self.conn, "close")
+                self.conn.close()
             for serial_controller in self.controller_list:
                 serial_controller.reset()
+
+            print(self.crash_report)
             raise e
 
     def initiate_all_devices(self, controller_list):
@@ -227,22 +237,24 @@ class Scheduler:
         while self.starting_time > time.time():
             continue
 
-        sleep = self.starting_time
+        self.sleep = self.starting_time
 
         while self.current_cycle < cycles:
             try:
                 # if everything goes to plan : send packet then sleep for next
+                print(f"frame : {self.current_cycle}")
                 self.current_controller.send_packet()
-                sleep += period
-                self.wait_until(sleep)
+                self.sleep += period
+                self.wait_until(self.sleep)
                 self.change_to_next_controller()
             except BufferError as b:
                 # if a device couldn't send a packet
                 print("================================")
                 print(str(b))
+                self.crash_report += f"device {self.current_controller.device_id} crashed at {self.current_cycle}\n"
                 print("================================")
-                sleep = self.handle_device_crash(period)
-                self.wait_until(sleep)
+                self.sleep = self.handle_device_crash(period)
+                self.wait_until(self.sleep)
             except KeyboardInterrupt as e:
                 raise e
 
@@ -305,13 +317,13 @@ class Scheduler:
 
 if __name__ == "__main__":
     if "-d" in sys.argv:
-        HOST = "127.0.0.1"
+        HOST = "192.168.43.150"
         PORT = 12345
         frequency = 868
         sf = 7
         bw = 125
-        phase = 3
-        period = 0.3
+        phase = 6
+        period = 0.4
         cycles = 10
         number_of_devices = int(input("number of devices (default=1): ").strip() or "1")
     else:
