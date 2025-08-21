@@ -19,7 +19,7 @@ programs/implementation/transmitterSide/serials_list.py
 *.cb
 *.cb2
 *.lb
-*/serials_list.py
+serials_list.py
 articles/
 lab_visits/day*
 # these rules might exclude image files for figures etc.
