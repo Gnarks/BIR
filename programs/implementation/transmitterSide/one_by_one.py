@@ -141,6 +141,8 @@ class Scheduler:
         self.current_controller_index = 0
         self.current_controller = self.controller_list[0]
         self.cycles = cycles
+        self.period = period
+        self.crash_report = ""
 
         self.connected = False
 
@@ -159,7 +161,7 @@ class Scheduler:
                 self.starting_time,
                 period,
                 cycles,
-                0,
+                1,
             ]
 
             self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -172,14 +174,12 @@ class Scheduler:
             print(f"{bcolors.FAIL}{self.crash_report}{bcolors.ENDC}")
 
         except Exception as e:
-            print("bbb")
             for serial_controller in self.controller_list:
                 serial_controller.reset()
 
             print(self.crash_report)
             raise e
         except KeyboardInterrupt as e:
-            print("aaaa²")
             if self.connected:
                 self.transmit_var(self.conn, "close")
                 self.conn.close()
@@ -235,101 +235,94 @@ class Scheduler:
 
     def scheduleSending(self, period, cycles):
         print(f"starting time : {self.starting_time}")
-        self.current_cycle = 0
 
         while self.starting_time > time.time():
             continue
 
         self.sleep = self.starting_time
 
-        while self.current_cycle < cycles:
-            try:
-                # if everything goes to plan : send packet then sleep for next
-                print(f"frame : {self.current_cycle}")
-                self.current_controller.send_packet()
-                self.sleep += period
-                self.wait_until(self.sleep)
-                self.change_to_next_controller()
-            except BufferError as b:
-                # if a device couldn't send a packet
-                print("================================")
-                print(str(b))
-                self.crash_report += f"device {self.current_controller.device_id} crashed at {self.current_cycle}\n"
-                print("================================")
-                self.sleep = self.handle_device_crash(period)
-                self.wait_until(self.sleep)
-            except KeyboardInterrupt as e:
-                raise e
+        while self.current_controller_index < len(self.controller_list):
+            self.current_cycle = 0
+            while self.current_cycle < cycles:
+                try:
+                    # if everything goes to plan : send packet then sleep for next
+                    print(f"frame : {self.current_cycle}")
+                    self.current_controller.send_packet()
+                    self.sleep += period
+                    self.wait_until(self.sleep)
+                    self.current_cycle += 1
 
+                except BufferError as b:
+                    # if a device couldn't send a packet
+                    print("================================")
+                    print(str(b))
+                    self.crash_report += f"device {self.current_controller.device_id} crashed at {self.current_cycle}\n"
+                    print("================================")
+                    self.sleep = self.handle_device_crash()
+                    if self.sleep == -1:
+                        self.current_controller_index = len(self.controller_list)
+                        self.current_cycle = self.cycles
+                        continue
+
+                    self.wait_until(self.sleep)
+                except KeyboardInterrupt as e:
+                    raise e
+
+            # here what todo when a device as finished sending
+            self.wait_until(time.time() + 10 * period)
+
+            self.sleep = self.change_to_next_device()
+            if self.sleep != -1:
+                self.wait_until(self.sleep)
+
+        # if all finished :
         if self.current_cycle == self.cycles:
             print("all cycles are done, waiting 10 period before closing the socket")
             self.wait_until(time.time() + 10 * period)
             self.transmit_var(self.conn, "close")
             self.conn.close()
 
-    def change_to_next_controller(self):
-        # change device
-        print(f"moved from {self.current_controller.device_id} ", end="")
-        changeCycle = self.current_controller_index + 1 == len(self.controller_list)
-        self.current_controller_index = (self.current_controller_index + 1) % len(
-            self.controller_list
-        )
-        self.current_controller = self.controller_list[self.current_controller_index]
-
-        print(f"to {self.current_controller.device_id}")
-        # if the last device in the list
-        if changeCycle:
-            self.current_cycle += 1
-            print(f"next cycle :{self.current_cycle}")
-
-        print()
-
-    def handle_device_crash(self, period):
+    def change_to_next_device(self):
+        if self.current_controller_index + 1 >= len(self.controller_list):
+            self.current_controller_index += 1
+            return -1
+        print("====================")
         print(
-            f"device {self.current_controller.device_id} crashed ! removing it from the list"
+            f"changing from {self.current_controller.device_id} to {self.controller_list[self.current_controller_index + 1].device_id}"
         )
-        # first tell the Rx to remove a device
-        self.transmit_var(self.conn, "remove")
-        # remove it from the list and take the next
-        to_remove = self.current_controller
-        self.controller_list.remove(to_remove)
+        print("====================")
+        self.transmit_var(self.conn, "init")
+        self.current_cycle = 0
 
-        if self.current_controller_index >= len(self.controller_list):
-            self.current_cycle += 1
-            self.current_controller_index = self.current_controller_index % len(
-                self.controller_list
-            )
+        self.current_controller_index += 1
 
         self.current_controller = self.controller_list[self.current_controller_index]
 
-        # send the device id to remove
-        self.transmit_var(self.conn, to_remove.device_id)
+        # send the device id
+        self.transmit_var(self.conn, self.current_controller.device_id)
 
-        # send the cycle to make sure of the synchronisation
-        self.transmit_var(self.conn, self.current_cycle)
-
-        restart_time = time.time() + 10 * period
-        # tell to sleep to actual time
+        # send the restart time
+        restart_time = time.time() + 10 * self.period
         self.transmit_var(self.conn, restart_time)
-
-        # restart with current index
-        self.transmit_var(self.conn, self.current_controller_index)
-
         return restart_time
+
+    def handle_device_crash(self):
+        # first tell the Rx to remove a device
+        return self.change_to_next_device()
 
 
 if __name__ == "__main__":
     if "-d" in sys.argv:
-        HOST = "192.168.43.150"
-        # HOST = "127.0.0.1"
+        # HOST = "192.168.43.176"
+        HOST = "127.0.0.1"
         PORT = 12345
         frequency = 868
         sf = 7
         bw = 125
         phase = 6
-        period = 0.4
-        cycles = 10
-        number_of_devices = int(input("number of devices (default=1): ").strip() or "1")
+        period = 0.2
+        cycles = 550
+        number_of_devices = 2
     else:
         # connect to receiver
         HOST = input("ip of receiver (default=127.0.0.1): ").strip() or "127.0.0.1"
