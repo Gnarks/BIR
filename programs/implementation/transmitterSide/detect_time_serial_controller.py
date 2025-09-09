@@ -172,14 +172,12 @@ class Scheduler:
             print(f"{bcolors.FAIL}{self.crash_report}{bcolors.ENDC}")
 
         except Exception as e:
-            print("bbb")
             for serial_controller in self.controller_list:
                 serial_controller.reset()
 
             print(self.crash_report)
             raise e
         except KeyboardInterrupt as e:
-            print("aaaa²")
             if self.connected:
                 self.transmit_var(self.conn, "close")
                 self.conn.close()
