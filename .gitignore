@@ -6,6 +6,8 @@
 *.bcf
 *.blg
 *.run.xml
+lab_visits/*
+lab_visits/
 *svg-inkscape
 programs/gr-time_synchronisation
 programs/last_work
