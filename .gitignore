@@ -1,13 +1,16 @@
 ## Core latex/pdflatex auxiliary files:
 *.bbl
+*draft
+*.toc
+*.tdo
 *.bcf
 *.blg
 *.run.xml
+*svg-inkscape
 programs/gr-time_synchronisation
 programs/last_work
 programs/implementation/transmitterSide/serials_list.py
 *__pycache__
-*.bib
 *.aux
 *.lof
 *.log
