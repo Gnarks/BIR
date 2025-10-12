@@ -21,6 +21,7 @@
 \usepackage{changepage}   % for the adjustwidth environment
 \usepackage[toc,page]{appendix}
 \usepackage[inkscapelatex=true]{svg}
+\usepackage{tabularx}
 
 \setlength {\marginparwidth }{2cm}
 \usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
@@ -239,24 +240,25 @@ In either case, the result gives an FFT peak at $f_0$.
 \end{figure}
 
 \section{Methodology}\label{Methodo}
+In this section, the methodology of the experiments is presented.
+To this end, the material (section \ref{mat}), the individual setups and the overall layout (section \ref{layout}), the transmission method (section \ref{tranMeth}) and the scenarios of the experiments (section \ref{scenario}) are discussed.
 
-\todo[inline]{Present the following section once they are finished}
 
-\subsection{Material}
+\subsection{Material}\label{mat}
 The use of material in our experiments can be separated into two parts :
 
-\textbf{The receiver Part} uses a laptop, an USRP \unsure{ unsure of the exact model (B210 or B200)} B2?0 Software Defined Radio (SDR) with the enclosure kit and an \unsure{which brand} antenna.
+\textbf{The receiver Part} uses a laptop, an USRP \unsure{ unsure of the exact model (B210 or B200?)} Software Defined Radio (SDR) with its enclosure kit and an \unsure{paper antenna brand ?} antenna.
 
-\textbf{The transmitter Part} uses a laptop, 4 StarTech USB hubs (ST7200USBM), 20 Arduino MKR1310 devices, a Velleman 5V lab power supply (LABPS3005SM), soldered copper wires to supply the Arduino devices and a handmade frame to attach the Arduino devices to. 
+\textbf{The transmitter Part} uses a laptop, 4 StarTech USB hubs (ST7200USBM), 20 Arduino MKR1310 devices with \unsure{plastic antenna brand ?} antenna, a Velleman 5V lab power supply (LABPS3005SM), soldered copper wires to supply the Arduino devices and a handmade frame to attach the Arduino devices to. 
 
 \improvement[inline]{Refer to the transmitter appendix to show the handmade frame}
 
-\subsection{Ls.ayout of the experiments}
+\subsection{Setups and Layout of the experiments}\label{layout}
 First, the singular setups of the receiver and transmitter part are discussed then the overall layout is presented.
 
-\textbf{The receiver setup} is straight forward : the laptop is connected to the USRP SDR by USB. The SDR antenna is vertical. The Figure \ref{fig:receiverSheme} shows a schematic of the receiver setup.
+\textbf{The receiver setup} is straight forward : the laptop is connected to the USRP SDR by USB. The SDR antenna is vertical. Figure \ref{fig:receiverSheme} shows a schematic of the receiver setup.
 
-\begin{figure}
+\begin{figure}[ht]
   \begin{center}
     \includesvg[height=0.17\textheight]{images/receiverSheme.svg}
   \end{center}
@@ -267,40 +269,108 @@ First, the singular setups of the receiver and transmitter part are discussed th
 
 \newpage
 \textbf{The transmitter setup} is more complex :
-the laptop is connected to a first USB HUB on which the 3 other USB hubs are connected to form a star topology. The choice of such a topology is to flatten the USB communication with all 20 Arduino devices.
-The Arduino devices are connected to the outermost USB hubs and powered externally by the lab power supply through their back pins with the soldered cables. The power supply is programmed with \qty{5}{\volt} of tension and \qty{1}{\ampere} of current.\\  
+the laptop is connected to a first USB HUB on which the 3 other USB hubs are connected to form a star topology. The choice of such a topology is to flatten the USB communication delay with all 20 Arduino devices.
+The Arduino devices are connected to the outermost USB hubs and powered externally by the lab power supply through their back pins with the soldered cables. The antennas connected to the devices are also vertical to have the same polarization as the SDR's antenna.\\
+The power supply is programmed with \qty{5}{\volt} of tension and \qty{1}{\ampere} of current.\\  
 The Figure \ref{fig:transConn} shows the USB connections from the laptop to the Arduino devices.
 Figure \ref{fig:transPower} shows the power supply schematic of the transmitter side. 
 
 
 \improvement[inline]{photo of the transmitter part in appendix}
+\improvement[inline]{add a reference for the polarization effect}
 
 
 \begin{figure}[H]
   \begin{center}
     \includesvg[width=0.999\textwidth]{images/transmitterConnections.svg}
   \end{center}
-  \caption{Receiver side USB connections schematic. The transmitter laptop is connected to the top level USB HUB on which the outermost hub are connected. Twenty devices with antennas are then connected to the outermost hubs.}\label{fig:transConn}
+  \caption{Receiver side USB connections schematic. The transmitter laptop is connected to the top level USB hub on which the outermost hubs are connected. Twenty devices with antennas are then connected to the outermost hubs.}\label{fig:transConn}
 \end{figure}
 
 \begin{figure}[ht]
   \begin{center}
-    \includesvg[width=0.90\textwidth]{images/TransPower.svg}
+    \includesvg[width=0.8\textwidth]{images/TransPower.svg}
   \end{center}
   \caption{Receiver side power supply schematic. The composition is as follows : five sets of devices are connected in parallel to the lab power supply. In a set all devices are connected in series through their back pins (VIN and GND).}\label{fig:transPower}
 \end{figure}
 
-\subsection{Software}
-The method to transmit and receive frame is discussed with two possible proposed methods :
 
-\textbf{Round-robin method} : 
+\textbf{The layout of an experiment} has tree components :
+The receiver and transmitter part composed of the receiver and transmitter setup respectively and a smartphone used as a modem for the communications between them.
+All of those components are in line of sight of each other to have the best possible transmission, reception and communication.
+Figure \ref{fig:layout} shows a representation of the layout.
 
-\textbf{One by One method} : 
+\improvement[inline]{Add photos of the layout in appendix}
+
+\begin{figure}[H]
+  \begin{center}
+    \includesvg[width=0.90\textwidth]{images/layout.svg}
+  \end{center}
+  \caption{Representation of an experiment layout. All components have line of sight with the others. The smartphone is used as a connection bridge between the receiver and transmitter side.}\label{fig:layout}
+\end{figure}
 
 
+\subsection{Transmission method}\label{tranMeth}
 
-\subsection{Scenarios} 
-The scenarios of capture are to be 
+The method to transmit and receive frames is discussed with two proposed methods :
+
+\textbf{Round-robin method (RR)} : each device sends a single frame then sleeps until all other devices sent their frame. 
+This creates a cycle where each device sends one frame and waits for the next cycle.
+The method cycles as explained until all frames from each device is sent.
+This cycling scheme implies to change from one device sending to another 20 times per cycle.
+
+\textbf{One by One method (ObO)} : each device sends all the frames it has to in a single burst.
+A cycle is defined as all the transmissions from a single device. 
+The method cycles for each device until all frames from each device is sent.  
+This cycling scheme implies to change from one device sending to another only 20 times in total. 
+
+
+\textbf{Comparison} : the methods are compared by (1) speed, (2) ease of implementation, (3) misclassification and (4) quality.
+
+(1) Each method is similar in terms of speed, though ObO can be faster because there are fewer synchronization constraints.
+
+(2) Both implementations have their specificities, but none are substantially harder to implement then the other.
+
+(3) Misclassification are most likely to occur when changing devices. The number of changes in RR makes it prone to misclassifications. In contrast, ObO has way fewer device changes making it less prone to misclassification.
+
+(4) The environment can vary over time (temperature, humidity, \dots) and the Deep Learning model is capable of identifying those variations and classify devices with respect to them.
+In RR, those variations are present on all devices because a cycle is short. 
+On the other hand, in ObO, those variations can appear in the captures because the time between the transmissions of the first and last device is much longer.
+
+
+\textbf{Selection} : although the quality of the captures from ObO can be lower than in RR, because of time constraints and difficulty to make the Round-robin method work flawlessly, the One by One method is used in the experiments.
+
+
+\subsection{Scenarios} \label{scenario}
+Captures are made in two environments at different distances.
+Some parameters are shared between each scenario. They are : the spreading factor ($SF$), bandwidth ($Bw$), carrier frequency ($F_c$), time between 2 frame transmissions ($period$), number of frames a device has to send, number of devices, gain on the receiver SDR and sampling rate ($F_s$). \\
+The values of the shared parameters are shown in Table \ref{tab:sharedParams}.
+
+\begin{table}[ht]
+  \caption{Shared parameters values}\label{tab:sharedParams}
+  \centering
+  \begin{tabular}{|c|c|c|c|}
+   \hline 
+   $SF$ & $Bw$ (\unit{\kilo\hertz}) & $F_c$ (\unit{\mega\hertz}) & $period$ (\unit{\ms}) \\
+   \hline 
+   $7$ & $125$ & $868$ & $200$ \\
+   \hline 
+   $frames\ per\ device$ & $number\ of\ devices$ & $Gain$ (\unit{\decibel}) & $F_s$ (\unit{samples\per\s}) \\
+   \hline 
+   $550$ & $20$ & $+40$ & $10^6$ \\
+   \hline 
+  \end{tabular}
+\end{table}
+
+\textbf{Inside} : The sports hall in the Vésale building on the Nimy Campus at Umons is used as the inside environment.
+The distance varies from \qty{5}{\m} to \qty{40}{\m} with an initial step of \qty{5}{\m} then steps of \qty{10}{\m} until \qty{40}{\m}.
+Thus, the resulting captures are at \qty{5}{\m}, \qty{10}{\m}, \qty{20}{\m}, \qty{30}{\m} and \qty{40}{\m}.
+
+\textbf{Outside} : The grass field between the DeVinci building and the "bâtiment 4" on the Nimy Campus at Umons is used as the outside environment. 
+The distance varies from \qty{5}{\m} to \qty{50}{\m} with an initial step of \qty{5}{\m} then steps of \qty{10}{\m} until \qty{50}{\m}.
+Thus, the resulting captures are at \qty{5}{\m}, \qty{10}{\m}, \qty{20}{\m}, \qty{30}{\m}, \qty{40}{\m} and \qty{50}{\m}.
+
+\unsure[inline]{I'm unsure on how to locate the environments}
 
 
 
