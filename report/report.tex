@@ -8,6 +8,7 @@
 \usepackage{algpseudocode}
 \usepackage{algorithm}
 \usepackage{minted}
+\usepackage{verbatim}
 \usepackage{hyperref}
 \usepackage{csquotes}
 \usepackage{biblatex} %Imports biblatex package
@@ -90,49 +91,54 @@ Maxime \textsc{Bartha}\\
 %
 % ------------------------------------------
 
-\section{Introduction}
-This report is a follow-up of an internship realized during the summer of 2025. 
-This internship is part of a University program for third year students to have an introduction to research at Umons.\\
-To this end, a student follows a PhD student and assists them in their work.
+\section{Introduction} \label{sec:intro}
 
-In my case, the PhD student supervising this internship is Aqeel Ahmed.
-His PhD is about Radio Frequency Fingerprinting (RFFI) of LoRa IQ signals using Deep Learning (DL) algorithms.\\
-In a recent survey \cite{AqeelSurvey}, he describes fingerprints as :
-\begin{tab}
-  The entangled features of electronic hardware originating from the manufacturing process.
-\end{tab}
-\noindent
-He then describes RFFI as : 
-\begin{tab}
-  The process of extracting those features from the radio signal
-  of the device with hardware imperfections that make the transmitter distinguishable among
-  others even if they are from the same model and manufacturer \cite{7902125}.
-\end{tab}
-Aqeel, in the same survey \cite{AqeelSurvey}, notes the lack of available data for LoRa RFFI. \\
-Due to this lack of databases, which is needed for DL model training, the creation of them is an important subject leading us to the objective of this internship.  
+With the rapid growth of Internet-of-Things (IoT) deployment for several daily life applications, the security of these devices is a key concern. Especially when the existing cryptography-based security techniques are resource-hungry and still vulnerable. Therefore, innovative and robust security mechanisms are urgently needed to protect the IoT end devices from malicious actors. 
 
-\subsection{Objective}
-The objective of this internship is to assist Aqeel in the collection of new LoRa IQ samples to experiment with Radio Fingerprinting classification with deep learning models.
-To this end, the collected samples are coming from multiples LoRa capable devices and labelled per device and time. 
-Those captures are to be well classified and shouldn't take too long to make. 
+Radio Frequency Fingerprint Identification (RFF) is an emerging technology and has been seen as a key candidate for device authentication at the physical layer \cite{AqeelSurvey}. The RF fingerprints are extracted from the received radio signal impaired by the transmitter's hardware components. These impairments are subtle, though unique to each transmitter, making them useful for device identification. However, manual extraction of these features is challenging and time-consuming. Therefore, Deep Learning (DL) based RFFI has been proposed as a vital solution for this field. Although DL based RFFI has shown enormous potential for emitter identification, but these algorithms require a massive amount of training. Availability of quality radio signal data is a key challenge in this domain \cite{AqeelSurvey}.
 
-\subsection{Overview}
+This report presents our efforts to collect Long-range (LoRa) RF signal data during the one-month BIR-supported summer internship period from July to August 2025. We systematically established test-bed scenarios in the indoor and outdoor environments to collect diverse LoRa RF signal data. 
+
+\subsection{Organization of the Report}
+
 Section \ref{LoraBasics} explains the basic knowledge required to understand LoRa related discussions in this report.\\
-Section \ref{Methodo} presents the material used, the structure of experiments as well as the different scenarios tested. A discussion on the possible implementations and transmission strategy is also made to assess the most reliable method.\\
+Section \ref{Methodo} presents the equipment used, the structure of experiments as well as the different scenarios tested. A discussion on the possible synchronization strategy is also made to assess the most reliable method.\\
 A description of the selected implementation is made in section \ref{Impl}.\\
 The results and their quality are assessed and discussed in section \ref{Res}.\\
 Finally, in section \ref{conclu}, propositions of improvements are presented and the conclusion of this work is done.
 
-\section{LoRa Basics}\label{LoraBasics}
-In this section, the essentials of the LoRA modulation technique (section \ref{CSS}), preamble format (section \ref{preamble}) and demodulation technique (section \ref{demod}) are discussed to understand their uses in the experiments.
+
+\subsection{Objective}
+
+The internship aimed to build an understanding of the LoRa technology, RF fingerprinting as physical layer security, and the applications of deep learning for LoRa RF Fingerprinting.  The key objectives are listed below:
+
+\begin{itemize}
+    \item \textbf{Understand the working of LoRa technology}
+    \item \textbf{Understand the applications of deep learning for LoRa RF fingerprinting}
+    \item \textbf{Establish a test bed scenario to collect LoRa RF signals in indoor and outdoor environments}.
+    \item \textbf{Collect LoRa RF signals at different distances to evaluate the DL model's performance under an unseen long-distance scenario}.
+\end{itemize}
+
+
+\section{LoRa Basics}\label{LoraBasics}  
+
+In this section, the essentials of the LoRa modulation technique (section \ref{CSS}), preamble format (section \ref{preamble}) and demodulation technique (section \ref{demod}) are discussed to understand their uses in the experiments.
 
 \subsection{Chirp Spread Spectrum modulation}\label{CSS}
+
 LoRa is a long-range, low-power, proprietary radio interface.
 It is based on a Chirp Spread Spectrum (CSS) modulation technique. 
 The basic element of this technique is called a chirp. 
 A chirp is a sinusoidal signal whose frequency varies linearly over time. 
 Details on the underlying math can be found in a recent article \cite{CSSTuto} explaining CSS modulation and the key advances made to understand it.
-To understand the experiments made in this paper, only the frequency domain is explored and explained.
+To understand the experiments made in this paper, only the frequency domain is explored and explained. The Figure \ref{fig:timeVsFreq} represents briefly the relation between the frequency and time domain. 
+
+\begin{figure}[ht]
+  \begin{center}
+    \includesvg[width=0.70\textwidth]{images/timeVsFreq.svg}
+  \end{center}
+  \caption{Representation of a LoRa symbol in the time domain (Top) and the frequency domain (bottom).}\label{fig:timeVsFreq}
+\end{figure}
 
 There are three necessary parameters for LoRa communication : a carrier frequency ($F_c$), a bandwidth ($B$) and spreading factor ($SF$).\\
 The carrier frequency of the signal is set in Europe as \qty{868}{\mega\hertz}.
@@ -214,10 +220,7 @@ A captured representation of a preamble + SFD can be seen in Figure \ref{fig:who
 \end{figure}
 \footnotetext{inspectrum is an open source radio signal analyser. Its source code can be found at \url{https://github.com/miek/inspectrum}} 
 
-The data symbols part isn't discussed because only the preamble and SFD parts are used for the deep learning algorithms.
-By taking more of the frame, for example the header, the DL model is capable of detecting features not specific to hardware impairments.  
-The preamble and SFD part forms a small stable set of symbols only impacted by hardware impairments.
-
+The preamble consists of unmodulated, identical base-up chirps generated directly from the transmitter’s RF chain without data encoding. This makes it ideal for capturing hardware-specific distortions such as carrier frequency offset (CFO), I/Q imbalance, and phase noise—core features used in RF fingerprinting. The SFD is shorter and may not reveal stable and consistent features. Whereas the payload can vary in size, hence it cannot be considered suitable for DL based RFFI \cite{shen2021radio, al2021deeplora}.
 
 \subsection{Demodulation}\label{demod}
 The demodulation technique used in the experiments comes from a comprehensive paper named \textit{From Demodulation to Decoding} \cite{demToDec}. The method proposed can be described in 4 steps graphically explained in Figure \ref{fig:demToD}.
@@ -240,21 +243,17 @@ In either case, the result gives an FFT peak at $f_0$.
 \end{figure}
 
 \section{Methodology}\label{Methodo}
-In this section, the methodology of the experiments is presented.
-To this end, the material (section \ref{mat}), the individual setups and the overall layout (section \ref{layout}), the transmission method (section \ref{tranMeth}) and the scenarios of the experiments (section \ref{scenario}) are discussed.
 
+The methodology section covers the hardware used, the test-bed established (Section \ref{mat}), the transmission method of the frames the transmitter to the receiver  (Section \ref{tranMeth}) and the scenarios of the experiments (Section \ref{scenario}).
 
-\subsection{Material}\label{mat}
-The use of material in our experiments can be separated into two parts :
+\subsection{Experimental Setup}\label{mat}
 
-\textbf{The receiver Part} uses a laptop, an USRP \unsure{ unsure of the exact model (B210 or B200?)} Software Defined Radio (SDR) with its enclosure kit and an \unsure{paper antenna brand ?} antenna.
-
-\textbf{The transmitter Part} uses a laptop, 4 StarTech USB hubs (ST7200USBM), 20 Arduino MKR1310 devices with \unsure{plastic antenna brand ?} antenna, a Velleman 5V lab power supply (LABPS3005SM), soldered copper wires to supply the Arduino devices and a handmade frame to attach the Arduino devices to. 
-
-\improvement[inline]{Refer to the transmitter appendix to show the handmade frame}
-
-\subsection{Setups and Layout of the experiments}\label{layout}
-First, the singular setups of the receiver and transmitter part are discussed then the overall layout is presented.
+ We used Arduino-based MKR-WAN 1310 LoRa transmitters for sending LoRa frames and USRP B210 software-defined radio (SDR) for the capture. The MKR-WAN 1310 transmitters were attached with Molex 868/915 LoRa compatible antenna, while the USRP B210 was attached with commonly used whip antennas.
+It was ensured that the polarization between the transmitter and receiver remains the same (vertical).
+Each device was fixed at least \qty{10}{\cm} apart from each other to avoid contact between the antennas and cause interference.
+The transmitters were powered through an external supply (Elleman 5V lab power supply (LABPS3005SM)) to maintain a stable voltage and current supply for all the transmitters.
+All the transmitters were connected to a single laptop through 4 StarTech USB hubs (ST7200USBM).
+On the receiver side, the USRP B210 SDR was connected to the receiving end laptop, which captured and processed the frames. 
 
 \textbf{The receiver setup} is straight forward : the laptop is connected to the USRP SDR by USB. The SDR antenna is vertical. Figure \ref{fig:receiverSheme} shows a schematic of the receiver setup.
 
@@ -308,37 +307,29 @@ Figure \ref{fig:layout} shows a representation of the layout.
   \end{center}
   \caption{Representation of an experiment layout. All components have line of sight with the others. The smartphone is used as a connection bridge between the receiver and transmitter side.}\label{fig:layout}
 \end{figure}
-
-
 \subsection{Transmission method}\label{tranMeth}
 
-The method to transmit and receive frames is discussed with two proposed methods :
+The method to transmit and receive frames is discussed with two proposed methods. In each of them, the devices take turns one after the others. The difference is how each device handles its turn.
 
-\textbf{Round-robin method (RR)} : each device sends a single frame then sleeps until all other devices sent their frame. 
-This creates a cycle where each device sends one frame and waits for the next cycle.
-The method cycles as explained until all frames from each device is sent.
-This cycling scheme implies to change from one device sending to another 20 times per cycle.
+\textbf{Round-robin method (RR)} : on its turn, a device transmits a LoRa frame, then passes the turn to the next one. This is done in a cycling manner, meaning the last device gives the turn to the first one.
+The method's transmissions goes on until every frame from every device is sent.
 
-\textbf{One by One method (ObO)} : each device sends all the frames it has to in a single burst.
-A cycle is defined as all the transmissions from a single device. 
-The method cycles for each device until all frames from each device is sent.  
-This cycling scheme implies to change from one device sending to another only 20 times in total. 
+\textbf{One by One method (ObO)} : on its turn, a device transmits every LoRa frames it has to, then passes the turn to the next one. Hence, no cycles are needed because at the end of the last device's turn, the transmissions are finished. 
 
+\textbf{Comparison} : the methods are compared by (1) speed, (2) ease of implementation, (3) misclassification probability and (4) quality. A misclassification occurs when the receiver labels a frame as coming from a device, although in reality, it's coming from another device. Misclassifications cannot occur, otherwise the database is unusable without finding and removing them. The quality metric refers to the uniformity of the captured frames.  
 
-\textbf{Comparison} : the methods are compared by (1) speed, (2) ease of implementation, (3) misclassification and (4) quality.
+(1) Each method is similar in terms of speed, though ObO can be faster because there is no increase in the possible misclassifications as speed increases. 
 
-(1) Each method is similar in terms of speed, though ObO can be faster because there are fewer synchronization constraints.
+(2) Both implementations have their specificities, but none are substantially harder to implement than the other.
 
-(2) Both implementations have their specificities, but none are substantially harder to implement then the other.
+(3) Misclassifications are most likely to occur when changing devices. The number of changes in RR makes it prone to misclassifications. In contrast, ObO has way fewer device changes, making it less prone to misclassification.
 
-(3) Misclassification are most likely to occur when changing devices. The number of changes in RR makes it prone to misclassifications. In contrast, ObO has way fewer device changes making it less prone to misclassification.
+(4) The environment can vary over time (temperature, humidity, \dots) and the Deep Learning model is capable of identifying those variations and classify devices with respect to them.\\
+In RR, those variations are present on all devices uniformly because they take turns quickly. \\
+On the other hand, in ObO, those variations aren't present uniformly across all devices because the time between each device is much longer.
+For example, between the transmissions of the first and last device, all the other devices sent their frames, which takes a considerable amount of time. This elapsed time can imply different variations between the first and last device, making the deep learning model capable of more easily distinguishing between them.
 
-(4) The environment can vary over time (temperature, humidity, \dots) and the Deep Learning model is capable of identifying those variations and classify devices with respect to them.
-In RR, those variations are present on all devices because a cycle is short. 
-On the other hand, in ObO, those variations can appear in the captures because the time between the transmissions of the first and last device is much longer.
-
-
-\textbf{Selection} : although the quality of the captures from ObO can be lower than in RR, because of time constraints and difficulty to make the Round-robin method work flawlessly, the One by One method is used in the experiments.
+\textbf{Selection} : although the quality of the captures from ObO can be lower than in RR, because of the lack of time and difficulty to make the Round-robin method work flawlessly, the One by One method is used in the experiments.
 
 
 \subsection{Scenarios} \label{scenario}
@@ -348,44 +339,277 @@ The values of the shared parameters are shown in Table \ref{tab:sharedParams}.
 
 \begin{table}[ht]
   \caption{Shared parameters values}\label{tab:sharedParams}
+  \begin{adjustwidth}{-5pt}{-5pt} % to avoid the hbox error because it's marginal
   \centering
   \begin{tabular}{|c|c|c|c|}
    \hline 
-   $SF$ & $Bw$ (\unit{\kilo\hertz}) & $F_c$ (\unit{\mega\hertz}) & $period$ (\unit{\ms}) \\
+   $\mathbf{SF}$ & $\mathbf{Bw}$ \textbf{(\unit{\kilo\hertz})} & $\mathbf{F_c}$ \textbf{(\unit{\mega\hertz})} & $\mathbf{period}$ \textbf{(\unit{\ms})} \\
    \hline 
    $7$ & $125$ & $868$ & $200$ \\
    \hline 
-   $frames\ per\ device$ & $number\ of\ devices$ & $Gain$ (\unit{\decibel}) & $F_s$ (\unit{samples\per\s}) \\
+   $\mathbf{frames}\ \mathbf{per}\ \mathbf{device}$ & $\mathbf{number}\ \mathbf{of}\ \mathbf{devices}$ & $\mathbf{Gain}$ \textbf{(\unit{\decibel})} & $\mathbf{F_s}$ \textbf{(\unit{samples\per\s})} \\
    \hline 
    $550$ & $20$ & $+40$ & $10^6$ \\
    \hline 
   \end{tabular}
+  \end{adjustwidth}
 \end{table}
 
-\textbf{Inside} : The sports hall in the Vésale building on the Nimy Campus at Umons is used as the inside environment.
+The period choice is a trade-off between speed and safety, going too fast can cause transmission issues.\\
+The number of frames per device is also a trade-off between time and quantity.\\
+The gain is selected for the frames to be easily detected at longer distances. \\
+A higher sampling frequency is better for Deep Learning training, hence the choice of $10^6$ samples per second.
+The $SF$, $Bw$, $F_c$ are arbitrary radio frequency parameters fixed throughout the experiments.
+
+The two environments used in the experiments are :
+
+\textbf{INDOOR} : The sports hall in the Vésale building on the Nimy Campus at Umons is used as the inside environment.
 The distance varies from \qty{5}{\m} to \qty{40}{\m} with an initial step of \qty{5}{\m} then steps of \qty{10}{\m} until \qty{40}{\m}.
 Thus, the resulting captures are at \qty{5}{\m}, \qty{10}{\m}, \qty{20}{\m}, \qty{30}{\m} and \qty{40}{\m}.
 
-\textbf{Outside} : The grass field between the DeVinci building and the "bâtiment 4" on the Nimy Campus at Umons is used as the outside environment. 
+\textbf{OUTDOOR} : The grass field between the DeVinci building and the "bâtiment 4" on the Nimy Campus at Umons is used as the outside environment. 
 The distance varies from \qty{5}{\m} to \qty{50}{\m} with an initial step of \qty{5}{\m} then steps of \qty{10}{\m} until \qty{50}{\m}.
 Thus, the resulting captures are at \qty{5}{\m}, \qty{10}{\m}, \qty{20}{\m}, \qty{30}{\m}, \qty{40}{\m} and \qty{50}{\m}.
-
-\unsure[inline]{I'm unsure on how to locate the environments}
 
 
 
 \section{Implementation}\label{Impl}
-\section{Results}\label{Res}
+The implementation stretches over 3 devices : the receiver laptop, the transmitter laptop and the Arduino devices. The objective of the implementation is to synchronize the transmission and reception such that the receiver is sure of the origin of each frame to correctly label it. 
+
+The overall interactions of each device are presented. For more details the implementation is available on GitHub at \url{https://github.com/Gnarks/BIR}. All the codes are upgraded versions of Maxime Bazin's 2024 implementation \cite{kazawai}. \unsure{footnote or citation ?}
+
+The implementation has 3 main processes : initiation (Section \ref{impl:initiation}), transmission (Section \ref{impl:transmission}) and termination (Section \ref{impl:termination}).
+In addition, error handling for unreachable Arduino devices is discussed in Section \ref{impl:errorHandling}.
+
+
+\subsection{Initiation}\label{impl:initiation}
+The initiation process has 2 phases. First, the transmitter establishes communication with each Arduino device through USB and initiates them. Then, Once each device has acknowledged, the transmitter initiates the communication with the receiver, giving it the ordered list of devices, an initial time stamp to start the transmission process, and the period between two transmissions. For the second phase to be possible the receiver has to be in a waiting state before the initial communication.
+
+\subsection{Transmission}\label{impl:transmission}
+The transmission process is the main part of the implementation, it is in charge of the synchronization and labeling of the devices.
+After the initiation, each laptop starts at the shared time. Then each period, the transmitter laptop makes a device send a frame and the receiver labels it with respect of the number of periods elapsed since the starting time.
+Once every frame from a device are sent, the transmitter tells the receiver which device is sending its frames next with another start time.   
+Such that, both the transmitter and receiver, at any time, know which device is currently transmitting and which frame is transmitted. \\
+Figure \ref{fig:generalTransmission} shows the general transmission scheme and Figure \ref{fig:deviceChange} shows the change from one device to another.
+
+\begin{figure}[ht]
+  \begin{adjustwidth}{-5cm}{-5cm}
+  \centering
+  \begin{subfigure}[ht]{0.7\textwidth}
+    \includesvg[width=1\textwidth]{images/generalTrans.svg}
+    \caption{General transmission scheme. The transmissions and receptions are synchronized by sharing the device start time and a common period.}
+    \label{fig:generalTransmission}
+  \end{subfigure}
+  \begin{subfigure}[ht]{0.7\textwidth}
+
+    \includesvg[width=1\textwidth]{images/change.svg}
+    \caption{Device change scheme. To pass the turn from a device $n$ to a device $n+1$, the transmitter waits for a fixed timeout and communicates to the receiver the next device and the device start time.}
+    \label{fig:deviceChange}
+  \end{subfigure}
+
+  \end{adjustwidth}
+  \caption{Device transmission process represented by the general transmission scheme (a) and device change scheme (b).}
+  \label{fig:transmissionProcess}
+\end{figure}
+
+
+\subsection{Termination}\label{impl:termination}
+The termination process is the last step of the implementation.
+It occurs when every device sent every frame it had to. The transmitter waits a certain time before telling the receiver to stop the reception process and closes the communication.
+
+\subsection{Error Handling}\label{impl:errorHandling}
+If for some reason during initiation or transmission, an Arduino device is unreachable it is removed it from list of devices. It is mandatory to remove the device from the list to avoid it to take time slots to send without transmitting anything. 
+
+An unreachable device can occur due to hardware or software issues, for example it is possible for a device to lose USB connection due the wind causing a false contact. Software issues are less likely to occur but taken into account. 
+
+During initiation, if any device is unreachable, an error blocks the process. This prevents any false start and requires fixing the issue before restarting.
+
+During transmission, if any device is unreachable, the transmitter stops then tells the receiver to remove this device from the list before continuing back where it needs after a shared time.
+
+The process of removing a device from the transmission and reception list is irreversible, to avoid backtracking frames. It can be an issue if errors occur frequently, but in the case of our experiments, those errors rarely occurred. In addition, most of these errors occurred during the initiation step because of false contacts.
+
+\section{Exploratory data analysis}\label{Res}
+
+The outdoor and indoor scenarios are represented \ref{tab:indoor} and Table \ref{tab:outdoor} respectively.
+They represent the number of captured frames per device and distance.
+The number in parentheses represent the double captures which are the files containing 2 frames instead of one.
+The double captures are not problematic in the case of the selected synchronization method (ObO), because it is possible in post-processing to separate them. In the other method (RR) having double captures would have been devastating because the origin of the frames wouldn’t be identifiable.
+One key observation to be made is
+the lack of clear decrease in frames captured with increasing distance.
+
+\begin{table}[H]
+  \caption{Frames Captured Indoor. The total number of frames is presented and in parentheses is the number of captures containing 2 frames.}\label{tab:indoor}
+  \begin{center}
+    \begin{tabular}{|c|c|c|c|c|c|}
+      \hline
+      \multicolumn{6}{|c|}{\textbf{Frames Captured indoor}} \\
+      \hline
+      \textbf{device ID} & \textbf{5\unit{\m}} & \textbf{10\unit{\m}} & \textbf{20\unit{\m}} & \textbf{30\unit{\m}} & \textbf{40\unit{\m}} \\
+      \hline
+1& 539(0)&544(1)&541(0)&520(0)&537(0)
+\\ \hline
+2& 526(0)&542(0)&526(25)&530(0)&532(0)
+\\ \hline
+3& 543(0)&540(1)&541(121)&539(0)&535(0)
+\\ \hline
+4& 531(0)&528(0)&532(93)&530(1)&535(0)
+\\ \hline
+5& 533(0)&530(0)&531(52)&532(2)&536(0)
+\\ \hline
+6& 523(0)&531(1)&533(23)&527(4)&522(0)
+\\ \hline
+7& 533(0)&539(3)&544(20)&544(8)&540(0)
+\\ \hline
+8& 534(0)&530(9)&535(12)&542(22)&541(0)
+\\ \hline
+9& 542(0)&542(49)&530(14)&541(21)&540(0)
+\\ \hline
+10& 543(0)&543(47)&536(11)&541(28)&543(0)
+\\ \hline
+11& 540(0)&537(0)&542(11)&533(44)&533(0)
+\\ \hline
+12& 537(0)&539(0)&524(8)&533(48)&537(0)
+\\ \hline
+13& 525(0)&533(0)&534(4)&534(84)&527(0)
+\\ \hline
+14& 538(0)&535(0)&528(6)&539(102)&534(0)
+\\ \hline
+15& 524(0)&540(0)&509(3)&533(126)&519(0)
+\\ \hline
+16& 534(0)&537(0)&528(3)&535(130)&538(0)
+\\ \hline
+17& 541(0)&537(0)&531(3)&538(124)&526(0)
+\\ \hline
+18& 532(0)&535(0)&535(1)&533(132)&529(0)
+\\ \hline
+19& 538(0)&542(0)&541(3)&542(133)&540(1)
+\\ \hline
+20& 536(0)&534(0)&535(2)&537(112)&531(0)
+\\ \hline
+      \hline
+      \textbf{total} & 10692&10738&10656&10703&10675\\ 
+      \hline
+    \end{tabular}
+  \end{center}
+\end{table}
+
+
+\begin{table}[H]
+  \caption{Frames Captured Outdoor. The total number of frames is presented and in parentheses is the number of captures containing 2 frames.}\label{tab:outdoor}
+  \begin{center}
+    \begin{tabular}{|c|c|c|c|c|c|c|}
+      \hline
+      \multicolumn{7}{|c|}{\textbf{Frames Captured outdoor}} \\
+      \hline
+      \textbf{device ID} & \textbf{5\unit{\m}} & \textbf{10\unit{\m}} & \textbf{20\unit{\m}} & \textbf{30\unit{\m}} & \textbf{40\unit{\m}} & \textbf{50\unit{\m}}\\
+      \hline
+1& 520(95)&538(26)&532(2)&523(0)&535(56)&540(71)
+\\ \hline
+2& 531(124)&535(64)&532(18)&534(1)&534(32)&536(59)
+\\ \hline
+3& 534(37)&542(0)&536(7)&538(1)&536(10)&545(37)
+\\ \hline
+4& 532(2)&525(1)&532(1)&533(4)&535(12)&531(28)
+\\ \hline
+5& 466(0)&538(1)&537(3)&534(53)&538(45)&540(54)
+\\ \hline
+6& 517(0)&535(0)&533(67)&535(3)&529(76)&536(7)
+\\ \hline
+7& 530(2)&530(1)&533(16)&547(1)&541(44)&532(0)
+\\ \hline
+8& 482(0)&520(63)&523(3)&533(89)&536(13)&529(0)
+\\ \hline
+9& 514(1)&520(51)&537(2)&540(25)&540(0)&523(0)
+\\ \hline
+10& 528(1)&530(1)&541(8)&532(0)&541(0)&526(3)
+\\ \hline
+11& 476(1)&524(0)&541(2)&526(1)&546(0)&521(2)
+\\ \hline
+12& 505(0)&519(1)&539(2)&525(0)&542(4)&533(2)
+\\ \hline
+13& 508(1)&529(2)&528(0)&529(5)&535(6)&536(1)
+\\ \hline
+14& 476(63)&539(52)&541(2)&533(0)&537(5)&540(0)
+\\ \hline
+15& 503(47)&529(28)&542(3)&484(0)&530(1)&516(0)
+\\ \hline
+16& 529(11)&540(16)&532(1)&523(0)&533(96)&526(1)
+\\ \hline
+17& 527(2)&538(9)&530(5)&527(3)&537(55)&535(48)
+\\ \hline
+18& 529(2)&531(8)&529(8)&520(3)&540(1)&525(77)
+\\ \hline
+19& 526(2)&536(13)&540(1)&535(5)&545(3)&534(20)
+\\ \hline
+20& 527(1)&541(14)&530(27)&532(13)&539(0)&536(0)
+\\ \hline
+      \hline
+      \textbf{total} & 10260&10639&10688&10583&10749&10640 \\
+      \hline
+    \end{tabular}
+  \end{center}
+\end{table}
+
+\newpage
+
+
+\subsection{Data overview}
+To get a better glimpse of the data, the following figures are presented for the $20^{th}$ device's preamble indoor:
+\begin{itemize}
+  \item Figure \ref{fig:amplitude} : The time domain representation of the first frame at different distances.  
+  \item Figure \ref{fig:freq} : The frequency domain representation of the first frame at different distances.  
+  \item Figure \ref{fig:histogram} : The constellation graph of the IQ samples at different distances.
+\end{itemize}
+
+In Figure \ref{fig:amplitude}, the relation between distance and amplitude is clearly shown. Between \qty{20}{\m} and \qty{30}{\m} the difference is less important than between \qty{5}{\m} and \qty{10}{\m}.
+
+\begin{figure}[ht]
+  \begin{center}
+    \includesvg[width=0.95\textwidth]{images/20deviceTimeDom.svg}
+  \end{center}
+  \caption{The IQ amplitude time plot of the $20^{th}$ device preamble at different distances.}\label{fig:amplitude}
+\end{figure}
+
+The spectrograms shown in Figure \ref{fig:freq} represents the same preambles shown in Figure \ref{fig:amplitude}.
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[width=0.95\textwidth]{images/FreqDom20dev.png}
+  \end{center}
+  \caption{The spectrograms of the $20^{th}$ device preamble at different distances.}\label{fig:freq}
+\end{figure}
+
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[width=0.95\textwidth]{images/histograms20.png}
+  \end{center}
+  \caption{Histograms of the $20^{th}$ device by distance indoors. Plotting the normalized amplitude with respect to the IQ. Ideal distribution is a peak at 1 in the X axis.}\label{fig:histogram}
+\end{figure}
+
 
 
 
 
 
 \section{Conclusion}\label{conclu}
+As a conclusion, our efforts on collecting LoRa RF signal data during the internship as concluded in two datasets varying distance indoor and outdoor.
+Although the time of the internship was small, a lot of improvements are to be mentioned from last year experiments.
+Such as a more stable hardware structure without power issues and new synchronization methods.
 
 
 \subsection{Possible improvements}
-Presenting the issues still in place and give an idea on how we might be able to fix them
+The possible improvements to be made in regard to this internship are the following :
+
+\begin{enumerate}
+  \item Make the RR method work stably for better quality captures. 
+  \item Not relying on a mobile phone modem for communication between laptops.
+  \item Fine-tune the detection algorithm to make it faster and safer.
+\end{enumerate}
+1) For example it might be possible to use a single laptop as the receiver and transmitter and use USB extension to connect to the SDR with longer distances. \\
+2) A Ethernet cable might be more appropriate and faster.\\
+3) Fine-tuning the different parameters such as the 0-padding or change the sampling frequency to $f-s = 2*BW$ as suggested a recent article \cite{CSSTuto}.
+
+
 \printbibliography
 
 \newpage

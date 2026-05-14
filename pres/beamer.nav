@@ -1,0 +1,88 @@
+\headcommand {\slideentry {0}{0}{1}{1/1}{}{0}}
+\headcommand {\beamer@framepages {1}{1}}
+\headcommand {\slideentry {0}{0}{2}{2/2}{}{0}}
+\headcommand {\beamer@framepages {2}{2}}
+\headcommand {\beamer@sectionpages {1}{2}}
+\headcommand {\beamer@subsectionpages {1}{2}}
+\headcommand {\sectionentry {1}{LoRa Radio Frequency Fingerprinting Identification}{3}{LoRa Radio Frequency Fingerprinting Identification}{0}}
+\headcommand {\slideentry {1}{0}{1}{3/3}{}{0}}
+\headcommand {\beamer@framepages {3}{3}}
+\headcommand {\beamer@subsectionpages {3}{3}}
+\headcommand {\beamer@subsectionentry {0}{1}{1}{4}{LoRa}}
+\headcommand {\slideentry {1}{1}{1}{4/4}{LoRa}{0}}
+\headcommand {\beamer@framepages {4}{4}}
+\headcommand {\slideentry {1}{1}{2}{5/5}{LoRa}{0}}
+\headcommand {\beamer@framepages {5}{5}}
+\headcommand {\slideentry {1}{1}{3}{6/6}{LoRa}{0}}
+\headcommand {\beamer@framepages {6}{6}}
+\headcommand {\slideentry {1}{1}{4}{7/7}{LoRa}{0}}
+\headcommand {\beamer@framepages {7}{7}}
+\headcommand {\beamer@subsectionpages {4}{7}}
+\headcommand {\beamer@subsectionentry {0}{1}{2}{8}{Radio frequency fingerprinting identification}}
+\headcommand {\slideentry {1}{2}{1}{8/10}{Radio frequency fingerprinting identification}{0}}
+\headcommand {\beamer@framepages {8}{10}}
+\headcommand {\beamer@subsectionpages {8}{10}}
+\headcommand {\beamer@subsectionentry {0}{1}{3}{11}{State of the art}}
+\headcommand {\slideentry {1}{3}{1}{11/11}{State of the art}{0}}
+\headcommand {\beamer@framepages {11}{11}}
+\headcommand {\beamer@subsectionpages {11}{11}}
+\headcommand {\beamer@subsectionentry {0}{1}{4}{12}{Objective}}
+\headcommand {\slideentry {1}{4}{1}{12/12}{Objective}{0}}
+\headcommand {\beamer@framepages {12}{12}}
+\headcommand {\beamer@sectionpages {3}{12}}
+\headcommand {\beamer@subsectionpages {12}{12}}
+\headcommand {\sectionentry {2}{Methodology}{13}{Methodology}{0}}
+\headcommand {\slideentry {2}{0}{1}{13/13}{}{0}}
+\headcommand {\beamer@framepages {13}{13}}
+\headcommand {\beamer@subsectionpages {13}{13}}
+\headcommand {\beamer@subsectionentry {0}{2}{1}{14}{Experimental setup}}
+\headcommand {\slideentry {2}{1}{1}{14/17}{Experimental setup}{0}}
+\headcommand {\beamer@framepages {14}{17}}
+\headcommand {\slideentry {2}{1}{2}{18/18}{Experimental setup}{0}}
+\headcommand {\beamer@framepages {18}{18}}
+\headcommand {\slideentry {2}{1}{3}{19/19}{Experimental setup}{0}}
+\headcommand {\beamer@framepages {19}{19}}
+\headcommand {\beamer@subsectionpages {14}{19}}
+\headcommand {\beamer@subsectionentry {0}{2}{2}{20}{Transmission methods}}
+\headcommand {\slideentry {2}{2}{1}{20/22}{Transmission methods}{0}}
+\headcommand {\beamer@framepages {20}{22}}
+\headcommand {\slideentry {2}{2}{2}{23/23}{Transmission methods}{0}}
+\headcommand {\beamer@framepages {23}{23}}
+\headcommand {\slideentry {2}{2}{3}{24/28}{Transmission methods}{0}}
+\headcommand {\beamer@framepages {24}{28}}
+\headcommand {\beamer@sectionpages {13}{28}}
+\headcommand {\beamer@subsectionpages {20}{28}}
+\headcommand {\sectionentry {3}{Results analysis}{29}{Results analysis}{0}}
+\headcommand {\slideentry {3}{0}{1}{29/29}{}{0}}
+\headcommand {\beamer@framepages {29}{29}}
+\headcommand {\beamer@subsectionpages {29}{29}}
+\headcommand {\beamer@subsectionentry {0}{3}{1}{30}{Data exploratory analysis}}
+\headcommand {\slideentry {3}{1}{1}{30/30}{Data exploratory analysis}{0}}
+\headcommand {\beamer@framepages {30}{30}}
+\headcommand {\slideentry {3}{1}{2}{31/31}{Data exploratory analysis}{0}}
+\headcommand {\beamer@framepages {31}{31}}
+\headcommand {\slideentry {3}{1}{3}{32/32}{Data exploratory analysis}{0}}
+\headcommand {\beamer@framepages {32}{32}}
+\headcommand {\beamer@subsectionpages {30}{32}}
+\headcommand {\beamer@subsectionentry {0}{3}{2}{33}{Problem encountered}}
+\headcommand {\slideentry {3}{2}{1}{33/34}{Problem encountered}{0}}
+\headcommand {\beamer@framepages {33}{34}}
+\headcommand {\slideentry {3}{2}{2}{35/37}{Problem encountered}{0}}
+\headcommand {\beamer@framepages {35}{37}}
+\headcommand {\beamer@sectionpages {29}{37}}
+\headcommand {\beamer@subsectionpages {33}{37}}
+\headcommand {\sectionentry {4}{Conclusion}{38}{Conclusion}{0}}
+\headcommand {\slideentry {4}{0}{1}{38/38}{}{0}}
+\headcommand {\beamer@framepages {38}{38}}
+\headcommand {\slideentry {4}{0}{2}{39/40}{}{0}}
+\headcommand {\beamer@framepages {39}{40}}
+\headcommand {\slideentry {4}{0}{3}{41/41}{}{0}}
+\headcommand {\beamer@framepages {41}{41}}
+\headcommand {\beamer@sectionpages {38}{41}}
+\headcommand {\beamer@subsectionpages {38}{41}}
+\headcommand {\sectionentry {5}{References}{42}{References}{0}}
+\headcommand {\beamer@partpages {1}{42}}
+\headcommand {\beamer@subsectionpages {38}{42}}
+\headcommand {\beamer@sectionpages {38}{42}}
+\headcommand {\beamer@documentpages {42}}
+\headcommand {\gdef \inserttotalframenumber {25}}

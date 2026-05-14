@@ -313,7 +313,6 @@ class Scheduler:
 
 if __name__ == "__main__":
     if "-d" in sys.argv:
-        # HOST = "192.168.43.176"
         HOST = "127.0.0.1"
         PORT = 12345
         frequency = 868
